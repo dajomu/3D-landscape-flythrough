@@ -16,6 +16,13 @@ $(function () {
 	renderer.setClearColor(colourBG);
 	renderer.setSize(window.innerWidth, window.innerHeight);
 
+	updateVertices = function(x,y){
+		var z = 0;
+		//if(x === 0 && y ===0){z = Math.floor((Math.random()*3) + 1);}
+		z = 3*Math.floor(Math.sin(((x*x)+(y*y))/3));//Math.floor((Math.random()*2) + 1);
+		return z;
+	}
+
 	// Addng axes in, just to make this project look cooler than any that's come before it -
 	var axes = new THREE.AxisHelper( 20 );
 	scene.add(axes);
@@ -23,7 +30,7 @@ $(function () {
 	// Setting up the plane object and hoping to alter the height map at some point -
 	var planeGeometry = new THREE.PlaneGeometry(60,60,100,100);
 	var planeMaterial = new THREE.MeshBasicMaterial(
-		{color: 0xcccccc, wireframe: true}
+		{color: 0xcccccc, wireframe: false}
 	);
 	var ground = new THREE.Mesh(planeGeometry,planeMaterial);
 	ground.dynamic = true;
@@ -32,9 +39,9 @@ $(function () {
 	ground.position.y = 0;
 	ground.position.z = 0;
 	ground.name = "Terrain";
-	ground.geometry.vertices[0].z =10;
+	//ground.geometry.vertices[0].z =10;
 	for(i=0, il = ground.geometry.vertices.length; i< il; i++){
-		ground.geometry.vertices[i].z = Math.floor((Math.random()*10) + 1);
+		ground.geometry.vertices[i].z = updateVertices(ground.geometry.vertices[i].x,ground.geometry.vertices[i].y);
 	}
 	scene.add(ground);
 	//alterGround(ground);
