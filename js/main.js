@@ -19,7 +19,8 @@ $(function () {
 	updateVertices = function(x,y){
 		var z = 0;
 		//if(x === 0 && y ===0){z = Math.floor((Math.random()*3) + 1);}
-		z = 3*Math.floor(Math.sin(((x*x)+(y*y))/3));//Math.floor((Math.random()*2) + 1);
+		//z = 2*Math.floor(Math.sin(((x*x)+(y*y))/3));//Math.floor((Math.random()*2) + 1);
+		z = 5*Math.sin(((x*x)+(y*y))/20);
 		return z;
 	}
 
@@ -29,20 +30,37 @@ $(function () {
 
 	// Setting up the plane object and hoping to alter the height map at some point -
 	var planeGeometry = new THREE.PlaneGeometry(60,60,100,100);
-	var planeMaterial = new THREE.MeshBasicMaterial(
-		{color: 0xcccccc, wireframe: false}
+	for(i=0, il = planeGeometry.vertices.length; i< il; i++){
+		planeGeometry.vertices[i].z = updateVertices(planeGeometry.vertices[i].x,planeGeometry.vertices[i].y);
+	}
+	var planeMaterial1 = new THREE.MeshLambertMaterial(
+		{color: 0xcccccc}
 	);
-	var ground = new THREE.Mesh(planeGeometry,planeMaterial);
+	var planeMaterial2 = new THREE.MeshBasicMaterial(
+		{color: 0x000000, wireframe: true}
+	);
+	var planeMaterial = [planeMaterial1, planeMaterial2 ];
+	
+	// Add lights
+	//var ambientLight = new THREE.AmbientLight(0xdddddd);
+    //scene.add(ambientLight);
+	
+	var directionalLight = new THREE.DirectionalLight(0xffffff);
+      directionalLight.position.set(1, 1, 1).normalize();
+      scene.add(directionalLight);
+	
+	var ground = THREE.SceneUtils.createMultiMaterialObject(planeGeometry.clone(), planeMaterial);
 	ground.dynamic = true;
 	ground.rotation.x=-0.5*Math.PI;
 	ground.position.x = 15;
 	ground.position.y = 0;
 	ground.position.z = 0;
 	ground.name = "Terrain";
+	ground.castShadow = true;
 	//ground.geometry.vertices[0].z =10;
-	for(i=0, il = ground.geometry.vertices.length; i< il; i++){
+	/*for(i=0, il = ground.geometry.vertices.length; i< il; i++){
 		ground.geometry.vertices[i].z = updateVertices(ground.geometry.vertices[i].x,ground.geometry.vertices[i].y);
-	}
+	}*/
 	scene.add(ground);
 	//alterGround(ground);
 
@@ -58,5 +76,5 @@ $(function () {
 	// Render this sucker -
 	renderer.render(scene, camera);
 	console.log(ground);
-	console.log(ground.geometry.vertices[0]);
+	//console.log(ground.geometry.vertices[0]);
 });
