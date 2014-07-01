@@ -5,12 +5,36 @@ function Terrain(detail) {
 }
 var colourBG = 0xEEEEEE;
 
+// These two variables dictate the animation -
+var angularSpeed = 0.1; 
+var lastTime = 0;
+
+// This loads a keyboard listener object -
+var keyboard = new THREEx.KeyboardState();
+
 $(function () {
 
 	// Setting up the scene, camera and renderer -
 	var scene = new THREE.Scene();
 	var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 	var renderer = new THREE.WebGLRenderer();
+
+	function animate(){
+		// update
+		var time = (new Date()).getTime();
+		var timeDiff = time - lastTime;
+		var angleChange = angularSpeed * timeDiff * 2 * Math.PI / 1000;
+		//ground.rotation.z += angleChange;
+		lastTime = time;
+
+		// render
+		renderer.render(scene, camera);
+
+		// request new frame
+		requestAnimationFrame(function(){
+		    animate();
+		});
+	}
 
 	// Render details including the background colour (yes, I'm English, get over it) -
 	renderer.setClearColor(colourBG);
@@ -76,5 +100,6 @@ $(function () {
 	// Render this sucker -
 	renderer.render(scene, camera);
 	console.log(ground);
+	animate();
 	//console.log(ground.geometry.vertices[0]);
 });
