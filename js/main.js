@@ -19,6 +19,22 @@ $(function () {
 	var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 	var renderer = new THREE.WebGLRenderer();
 
+	controls = new THREE.TrackballControls( camera );
+
+	controls.rotateSpeed = 1.0;
+	controls.zoomSpeed = 1.2;
+	controls.panSpeed = 0.8;
+
+	controls.noZoom = false;
+	controls.noPan = false;
+
+	controls.staticMoving = true;
+	controls.dynamicDampingFactor = 0.3;
+
+	controls.keys = [ 65, 83, 68 ];
+
+	controls.addEventListener( 'change', render );
+
 	function animate(){
 		// update
 		var time = (new Date()).getTime();
@@ -27,6 +43,8 @@ $(function () {
 		//ground.rotation.z += angleChange;
 		lastTime = time;
 
+		controls.update();
+
 		// render
 		renderer.render(scene, camera);
 
@@ -34,6 +52,10 @@ $(function () {
 		requestAnimationFrame(function(){
 		    animate();
 		});
+	}
+
+	function render(){
+		renderer.render( scene, camera );
 	}
 
 	// Render details including the background colour (yes, I'm English, get over it) -
